@@ -19,7 +19,7 @@ public class MoveLeft : MonoBehaviour
     void Update()
     {
         // If the game is not yet over, move the object to the left
-        if (playerControllerScript.gameOver == false)
+        if (!playerControllerScript.gameOver)
         {
             transform.Translate(Vector3.left * speed * Time.deltaTime);
         }

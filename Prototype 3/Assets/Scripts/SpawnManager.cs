@@ -29,7 +29,7 @@ public class SpawnManager : MonoBehaviour
     void SpawnObstacle()
     {
         // Spawn obstacles as long as the game is not yet over
-        if (playerControllerScript.gameOver == false)
+        if (!playerControllerScript.gameOver)
         {
             Instantiate(obsataclePrefab, spawnPos, obsataclePrefab.transform.rotation);
         }
