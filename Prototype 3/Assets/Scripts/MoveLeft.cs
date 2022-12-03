@@ -22,7 +22,7 @@ public class MoveLeft : MonoBehaviour
         {
             float speed = 30.0f;
 
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (playerControllerScript.isOnBoost)
             {
                 speed = 60.0f;
             }

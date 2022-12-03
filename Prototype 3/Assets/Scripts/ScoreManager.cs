@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
-    private float totalTime;
-    private int multiplier = 10;
-    private float score;
-
     private PlayerController playerControllerScript;
 
+    private float totalTime;
+    private int multiplier = 10;
+    public float score;
 
     // Start is called before the first frame update
     void Start()
@@ -25,7 +24,7 @@ public class ScoreManager : MonoBehaviour
         {
              int boostMultiplier = 1;
 
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (playerControllerScript.isOnBoost)
             {
                 boostMultiplier = 5;
             }
@@ -34,7 +33,7 @@ public class ScoreManager : MonoBehaviour
             totalTime += Time.deltaTime * boostMultiplier;
             score = totalTime * multiplier;
 
-            Debug.Log((int)score);
+            Debug.Log($"Score: {(int)score}");
         }
 
     }

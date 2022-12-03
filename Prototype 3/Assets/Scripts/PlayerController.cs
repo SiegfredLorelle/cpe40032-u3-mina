@@ -11,21 +11,26 @@ public class PlayerController : MonoBehaviour
     public AudioClip jumpSound;
     public AudioClip crashSound;
     private AudioSource playerAudio;
+    private ScoreManager scoreManagerScript;
 
     public float jumpForce = 600f;
     public float gravityModifier = 2.0f;
     public bool isOnGround = true;
     public bool gameOver = false;
     public bool isOnSecondJump = false;
+    public bool isOnBoost = false;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
-        // Get the components from the player
+        // Get the components from player or other game objects
         playerRb = GetComponent<Rigidbody>();
         playerAnim = GetComponent<Animator>();
         playerAudio = GetComponent<AudioSource>();
+        scoreManagerScript = GameObject.Find("Score Manager").GetComponent<ScoreManager>();
+
 
         // Adjust the physics of the game based on gravity modifier
         Physics.gravity *= gravityModifier;
@@ -34,6 +39,25 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        var main = dirtParticle.main;
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            playerAnim.SetFloat("Speed_f", 1.75f);
+            main.simulationSpeed = 1.30f;
+
+            isOnBoost = true;
+        }
+        else
+        {
+            playerAnim.SetFloat("Speed_f", 1.0f);
+            main.simulationSpeed = 0.65f;
+
+            isOnBoost = false;
+        }
+
+
+
         // On spacebar, player will jump if on ground or on first jump assuming the game is not yet over
         if (Input.GetKeyDown(KeyCode.Space) && (isOnGround || !isOnSecondJump) && !gameOver) 
         {
@@ -92,9 +116,12 @@ public class PlayerController : MonoBehaviour
                 explosionParticle.Play();
                 dirtParticle.Stop();
                 playerAudio.PlayOneShot(crashSound, 0.5f);
-                
-                Debug.Log("Game Over!!");
+
+                int finalScore = (int)scoreManagerScript.score;
+                Debug.Log($"Game Over!!  Final Score: {finalScore}");
+
                 gameOver = true;
+
             }
 
 

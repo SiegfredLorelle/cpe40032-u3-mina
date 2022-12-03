@@ -7,8 +7,12 @@ public class SpawnManager : MonoBehaviour
     public GameObject[] obstaclePrefabs;
 
     private Vector3 spawnPos = new Vector3(30, 0, 0);
-    private float startDelay = 2.0f;
     private PlayerController playerControllerScript;
+
+    private float startDelay = 2.0f;
+    private float shortestDelayRange = 0.5f;
+    private float normalDelayRange = 1.0f;
+    private float longestDelayRange = 2.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -35,8 +39,16 @@ public class SpawnManager : MonoBehaviour
             int obstacleIndex = Random.Range(0, obstaclePrefabs.Length);
             Instantiate(obstaclePrefabs[obstacleIndex], spawnPos, obstaclePrefabs[obstacleIndex].transform.rotation);
 
-            // Spawn the next obstacle at a random delay
-            float randomDelay = Random.Range(1.25f, 3.0f);
+            // Randomize a delay for the next spawn
+            float randomDelay = Random.Range(normalDelayRange, longestDelayRange);
+
+            // Increase the chance of getting a short delay if on boost
+            if (playerControllerScript.isOnBoost)
+            {
+                randomDelay = Random.Range(shortestDelayRange, normalDelayRange);
+            }
+
+            // Spawn the obstacle at a random delay
             Invoke("SpawnObstacle", randomDelay);
         }
 
