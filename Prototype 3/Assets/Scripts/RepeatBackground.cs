@@ -10,7 +10,7 @@ public class RepeatBackground : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        // Starting position of the background
         startPos = transform.position;
 
         // Get the half width of background using box collider
@@ -20,10 +20,10 @@ public class RepeatBackground : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Bring the background at the starting position if exactly on its half
+        // If on the half width of the background, return to starting position (background sroll)
         if (transform.position.x < startPos.x - repeatWidth)
         {
-            transform.position = startPos;    
+            transform.position = startPos;
         }
     }
 }

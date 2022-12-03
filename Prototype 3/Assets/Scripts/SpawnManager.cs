@@ -4,32 +4,26 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    public GameObject[] obstaclePrefabs;
-
-    private Vector3 spawnPos = new Vector3(30, 0, 0);
     private PlayerController playerControllerScript;
 
-    private float startDelay = 5.0f;
+    public GameObject[] obstaclePrefabs;
+    private Vector3 spawnPos = new Vector3(30, 0, 0);
+    private float startDelay = 4.0f;
     private float shortestDelayRange = 0.5f;
     private float normalDelayRange = 1.0f;
-    private float longestDelayRange = 2.0f;
+    private float longestDelayRange = 1.75f;
 
     // Start is called before the first frame update
     void Start()
     {
-        // Get variables from player controller scripts
+        // Get player controller script from player to access its variables
         playerControllerScript = GameObject.Find("Player").GetComponent<PlayerController>();
 
         // Spawn the first obstacle on a delay
         Invoke("SpawnObstacle", startDelay);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // Spawn obstacles via recusrive loop
     void SpawnObstacle()
     {
         // Spawn obstacles as long as the game is not yet over

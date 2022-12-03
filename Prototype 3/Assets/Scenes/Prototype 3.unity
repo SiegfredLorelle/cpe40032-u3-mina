@@ -713,7 +713,7 @@ ParticleSystem:
   m_GameObject: {fileID: 437245283}
   serializedVersion: 7
   lengthInSec: 0.5
-  simulationSpeed: 0.75
+  simulationSpeed: 0.725
   stopAction: 0
   cullingMode: 3
   ringBufferMode: 0
@@ -7215,9 +7215,6 @@ MonoBehaviour:
   dirtParticle: {fileID: 2130920137}
   jumpSound: {fileID: 8300000, guid: 08ab7053d586c458db3774d33c141a4b, type: 3}
   crashSound: {fileID: 8300000, guid: 4bcde6de2166e41e284ec46d8a01fb90, type: 3}
-  jumpForce: 715
-  gravityModifier: 3
-  isOnGround: 1
   gameOver: 0
   isOnSecondJump: 0
   isOnBoost: 0
@@ -7242,7 +7239,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 0.051362574
+  MinDistance: 0.0056690904
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0

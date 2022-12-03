@@ -6,38 +6,42 @@ public class ScoreManager : MonoBehaviour
 {
     private PlayerController playerControllerScript;
 
+    private int noMultiplier = 1;
+    private int boostMultiplerRate = 5;
+    private int generalMultiplier = 10;
     private float totalTime;
-    private int multiplier = 10;
     public float score;
 
     // Start is called before the first frame update
     void Start()
     {
+        // Get player controller script from player to access its variables
         playerControllerScript = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (playerControllerScript.isIntroDone)
+        // If intro is done, and game is not yet over
+        if (playerControllerScript.isIntroDone && !playerControllerScript.gameOver)
         {
-            if (!playerControllerScript.gameOver)
+            // If not on boost, then no multiplier
+            int boostMultiplier = noMultiplier;
+
+            // If on boost, there is a boost multiplier
+            if (playerControllerScript.isOnBoost)
             {
-                int boostMultiplier = 1;
-
-                if (playerControllerScript.isOnBoost)
-                {
-                    boostMultiplier = 5;
-                }
-
-
-                totalTime += Time.deltaTime * boostMultiplier;
-                score = totalTime * multiplier;
-
-                Debug.Log($"Score: {(int)score}");
+                boostMultiplier = boostMultiplerRate;
             }
+
+            // Scoring system where total time is the score
+            totalTime += Time.deltaTime * boostMultiplier;
+
+            // multiplier here just increases the scores (because low score does't seem exciting)
+            score = totalTime * generalMultiplier;
+
+            // Constantly show the score in console
+            Debug.Log($"Score: {(int)score}");
         }
-
-
     }
 }

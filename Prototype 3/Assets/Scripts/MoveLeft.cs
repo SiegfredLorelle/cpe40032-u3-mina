@@ -6,33 +6,34 @@ public class MoveLeft : MonoBehaviour
 {
     private PlayerController playerControllerScript;
     private float leftBound = -15.0f;
+    private float normalSpeed = 30.0f;
+    private int boostMultiplier = 2;
 
     // Start is called before the first frame update
     void Start()
     {
-        // Get variables from player controller scripts
+        // Get player controller script from player to access its variables
         playerControllerScript = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (playerControllerScript.isIntroDone)
+        // If the intro is done, and the game is not yet over
+        if (playerControllerScript.isIntroDone && !playerControllerScript.gameOver)
         {
-            // If the game is not yet over, move the object to the left
-            if (!playerControllerScript.gameOver)
+            // Set normal speed for prefabs and background
+            float speed = normalSpeed;
+
+            // If on boost, increase the speed
+            if (playerControllerScript.isOnBoost)
             {
-                float speed = 30.0f;
-
-                if (playerControllerScript.isOnBoost)
-                {
-                    speed = 60.0f;
-                }
-
-                transform.Translate(Vector3.left * speed * Time.deltaTime);
-
-
+                speed *= boostMultiplier;
             }
+
+            // Move the prefabs and background to the left (creates an illusion that the player is running to the right)
+            transform.Translate(Vector3.left * speed * Time.deltaTime);
+
 
             // Destroy obstacle upon reaching the left bound
             if (transform.position.x < leftBound && gameObject.CompareTag("Obstacle"))
@@ -40,6 +41,5 @@ public class MoveLeft : MonoBehaviour
                 Destroy(gameObject);
             }
         }
-
     }
 }

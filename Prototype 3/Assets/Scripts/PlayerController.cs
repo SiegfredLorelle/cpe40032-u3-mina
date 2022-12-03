@@ -12,88 +12,96 @@ public class PlayerController : MonoBehaviour
     public AudioClip crashSound;
     private AudioSource playerAudio;
     private ScoreManager scoreManagerScript;
+    private AudioSource cameraAudio;
 
-    public float jumpForce = 600f;
-    public float gravityModifier = 2.0f;
-    public bool isOnGround = true;
+    private float jumpForce = 715.0f;
+    private float gravityModifier = 3.0f;
+    private float Gamedelay = 1.0f;
+    private float minAnimationSpeed = 1.0f;
+    private float maxAnimationSpeed = 1.75f;
+    private float minParticleSpeed = 0.65f;
+    private float maxParticleSpeed = 1.30f;
+    private string[] idleAnimations = new string[] { "Idle_WipeMouth", "Salute", "Idle_CheckWatch" };
+    private bool isOnGround = true;
     public bool gameOver = false;
     public bool isOnSecondJump = false;
     public bool isOnBoost = false;
     public bool isIntroDone = false;
-    private string[] idleAnimations = new string[] { "Idle_WipeMouth", "Salute", "Idle_CheckWatch" };
-
 
 
     // Start is called before the first frame update
     void Start()
     {
-        // Get the components from player or other game objects
+        // Get the components from player and other game objects
         playerRb = GetComponent<Rigidbody>();
         playerAnim = GetComponent<Animator>();
         playerAudio = GetComponent<AudioSource>();
         scoreManagerScript = GameObject.Find("Score Manager").GetComponent<ScoreManager>();
+        cameraAudio = GameObject.Find("Main Camera").GetComponent<AudioSource>();
+
+        // Show in console the controls of the game
+        Debug.Log("[Spacebar] : Jump      [L Shift] : Boost");
 
         // Adjust the physics of the game based on gravity modifier
         Physics.gravity *= gravityModifier;
 
+        // Play a random idle animation
         int Index = Random.Range(0, idleAnimations.Length);
         playerAnim.Play(idleAnimations[Index]);
-
-
     }
-
-
-
-
-
-
-
-
-
 
     // Update is called once per frame
     void Update()
     {
-
+        // Check if intro is done
         if (!isIntroDone)
-
         {
-
-            if (!playerAnim.GetCurrentAnimatorStateInfo(2).IsTag("Idle") && Time.time > 1)
+            // If the idle animations is finished playing
+            if (!playerAnim.GetCurrentAnimatorStateInfo(2).IsTag("Idle") && Time.time > Gamedelay)
             {
-                playerAnim.SetFloat("Speed_f", 1.0f);
+                // start running animation
+                playerAnim.SetFloat("Speed_f", minAnimationSpeed);
 
+                // if already on running animation and its transitions are finished
                 if (playerAnim.GetCurrentAnimatorStateInfo(0).IsName("Run_Static"))
                 {
+                    // intro is done, start playing dirt particles 
                     isIntroDone = true;
                     dirtParticle.Play();
-
                 }
             }
         }
 
+        // If intro is done
         else
         {
+            // variable needed to access simulation speed of dirt particle
             var main = dirtParticle.main;
 
+            // If Left Shift is pressed
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                playerAnim.SetFloat("Speed_f", 1.75f);
-                main.simulationSpeed = 1.30f;
+                // Increase the animation speed of run and simulaton speed of dirt particles
+                playerAnim.SetFloat("Speed_f", maxAnimationSpeed);
+                main.simulationSpeed = maxParticleSpeed;
 
+                // Turn on boost
                 isOnBoost = true;
             }
+
+            // Left Shift is not pressed
             else
             {
-                playerAnim.SetFloat("Speed_f", 1.0f);
-                main.simulationSpeed = 0.65f;
+                // Keep the following on normal speed: animation speed of run and simulaton speed of dirt particles
+                playerAnim.SetFloat("Speed_f", minAnimationSpeed);
+                main.simulationSpeed = minParticleSpeed;
 
+                // Turn off boost
                 isOnBoost = false;
             }
 
 
-
-            // On spacebar, player will jump if on ground or on first jump assuming the game is not yet over
+            // On spacebar, player will jump if on ground or on first jump, assuming the game is not yet over
             if (Input.GetKeyDown(KeyCode.Space) && (isOnGround || !isOnSecondJump) && !gameOver)
             {
 
@@ -109,7 +117,6 @@ public class PlayerController : MonoBehaviour
                 // Play jump sound
                 playerAudio.PlayOneShot(jumpSound, 1.0f);
 
-
                 // Play animation and stop dirt particle if on first jump
                 if (!isOnSecondJump)
                 {
@@ -117,10 +124,11 @@ public class PlayerController : MonoBehaviour
                     dirtParticle.Stop();
                 }
 
+                // Set on ground to false since recently jumped (on air)
                 isOnGround = false;
             }
         }
-         
+
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -128,26 +136,23 @@ public class PlayerController : MonoBehaviour
         // If player collided with the ground
         if (collision.gameObject.CompareTag("Ground"))
         {
-            if (isIntroDone)
+            // If intro is done and game is not yet over
+            if (isIntroDone && !gameOver)
             {
-                // Play dirt particle as long as the game is not yet over
-                if (!gameOver)
-                {
-                    isOnGround = true;
-                    isOnSecondJump = false;
+                // Play dirt particle
+                dirtParticle.Play();
 
-                    if (playerAnim.GetCurrentAnimatorStateInfo(0).IsName("Run_Static"))
-                    {
-                        dirtParticle.Play();
-                    }
-                }
+                // Set variables
+                isOnGround = true;
+                isOnSecondJump = false;
             }
         }
+
 
         // If player collided with an obstacle, then the game is over
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
-            // Ensures it only occurs once by setting game over to true inside the code block
+            // If game is not yet over (to be set to over within code block to ensure it will only run once)
             if (!gameOver)
             {
                 // Play death animation
@@ -156,17 +161,19 @@ public class PlayerController : MonoBehaviour
 
                 // Play explosion and sound effects, turn off dirt particles
                 explosionParticle.Play();
-                dirtParticle.Stop();
                 playerAudio.PlayOneShot(crashSound, 0.5f);
 
+                // Turn off dirt particles and background music from camera
+                dirtParticle.Stop();
+                cameraAudio.Stop();
+
+                // Inform players that the game is over and show their final score
                 int finalScore = (int)scoreManagerScript.score;
-                Debug.Log($"Game Over!!  Final Score: {finalScore}");
+                Debug.Log($"Game Over!!      Final Score: {finalScore}");
 
+                // Set the game to be over
                 gameOver = true;
-
             }
-
-
         }
     }
 }
