@@ -19,22 +19,25 @@ public class ScoreManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if (!playerControllerScript.gameOver)
+        if (playerControllerScript.isIntroDone)
         {
-             int boostMultiplier = 1;
-
-            if (playerControllerScript.isOnBoost)
+            if (!playerControllerScript.gameOver)
             {
-                boostMultiplier = 5;
+                int boostMultiplier = 1;
+
+                if (playerControllerScript.isOnBoost)
+                {
+                    boostMultiplier = 5;
+                }
+
+
+                totalTime += Time.deltaTime * boostMultiplier;
+                score = totalTime * multiplier;
+
+                Debug.Log($"Score: {(int)score}");
             }
-
-
-            totalTime += Time.deltaTime * boostMultiplier;
-            score = totalTime * multiplier;
-
-            Debug.Log($"Score: {(int)score}");
         }
+
 
     }
 }

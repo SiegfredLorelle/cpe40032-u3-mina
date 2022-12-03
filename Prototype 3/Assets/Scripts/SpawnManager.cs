@@ -9,7 +9,7 @@ public class SpawnManager : MonoBehaviour
     private Vector3 spawnPos = new Vector3(30, 0, 0);
     private PlayerController playerControllerScript;
 
-    private float startDelay = 2.0f;
+    private float startDelay = 5.0f;
     private float shortestDelayRange = 0.5f;
     private float normalDelayRange = 1.0f;
     private float longestDelayRange = 2.0f;

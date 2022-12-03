@@ -17,25 +17,29 @@ public class MoveLeft : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // If the game is not yet over, move the object to the left
-        if (!playerControllerScript.gameOver)
+        if (playerControllerScript.isIntroDone)
         {
-            float speed = 30.0f;
-
-            if (playerControllerScript.isOnBoost)
+            // If the game is not yet over, move the object to the left
+            if (!playerControllerScript.gameOver)
             {
-                speed = 60.0f;
+                float speed = 30.0f;
+
+                if (playerControllerScript.isOnBoost)
+                {
+                    speed = 60.0f;
+                }
+
+                transform.Translate(Vector3.left * speed * Time.deltaTime);
+
+
             }
 
-            transform.Translate(Vector3.left * speed * Time.deltaTime);
-
-
+            // Destroy obstacle upon reaching the left bound
+            if (transform.position.x < leftBound && gameObject.CompareTag("Obstacle"))
+            {
+                Destroy(gameObject);
+            }
         }
 
-        // Destroy obstacle upon reaching the left bound
-        if (transform.position.x < leftBound && gameObject.CompareTag("Obstacle"))
-        {
-            Destroy(gameObject);
-        }
     }
 }
