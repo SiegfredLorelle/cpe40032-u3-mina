@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    public GameObject obsataclePrefab;
-    private Vector3 spawnPos = new Vector3(25, 0, 0);
+    public GameObject[] obstaclePrefabs;
+
+    private Vector3 spawnPos = new Vector3(30, 0, 0);
     private float startDelay = 2.0f;
     private float repeatRate = 2.0f;
     private PlayerController playerControllerScript;
@@ -31,7 +32,8 @@ public class SpawnManager : MonoBehaviour
         // Spawn obstacles as long as the game is not yet over
         if (!playerControllerScript.gameOver)
         {
-            Instantiate(obsataclePrefab, spawnPos, obsataclePrefab.transform.rotation);
+            int obstacleIndex = Random.Range(0, obstaclePrefabs.Length);
+            Instantiate(obstaclePrefabs[obstacleIndex], spawnPos, obstaclePrefabs[obstacleIndex].transform.rotation);
         }
     }
 }
