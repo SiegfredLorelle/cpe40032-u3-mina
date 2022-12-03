@@ -16,7 +16,7 @@ public class SpawnManager : MonoBehaviour
         // Get variables from player controller scripts
         playerControllerScript = GameObject.Find("Player").GetComponent<PlayerController>();
 
-        // Spawn obstacles on a delay and a rate
+        // Spawn the first obstacle on a delay
         Invoke("SpawnObstacle", startDelay);
     }
 
@@ -31,10 +31,12 @@ public class SpawnManager : MonoBehaviour
         // Spawn obstacles as long as the game is not yet over
         if (!playerControllerScript.gameOver)
         {
+            // Spawn a random obstacle
             int obstacleIndex = Random.Range(0, obstaclePrefabs.Length);
             Instantiate(obstaclePrefabs[obstacleIndex], spawnPos, obstaclePrefabs[obstacleIndex].transform.rotation);
 
-            float randomDelay = Random.Range(1.5f, 3.0f);
+            // Spawn the next obstacle at a random delay
+            float randomDelay = Random.Range(1.25f, 3.0f);
             Invoke("SpawnObstacle", randomDelay);
         }
 

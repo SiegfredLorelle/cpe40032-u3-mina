@@ -11,10 +11,12 @@ public class PlayerController : MonoBehaviour
     public AudioClip jumpSound;
     public AudioClip crashSound;
     private AudioSource playerAudio;
-    public float jumpForce = 15.0f;
+
+    public float jumpForce = 600f;
     public float gravityModifier = 2.0f;
     public bool isOnGround = true;
     public bool gameOver = false;
+    public bool isOnSecondJump = false;
 
 
     // Start is called before the first frame update
@@ -32,16 +34,29 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // On spacebar, player will jump if on the ground and the game is not yet over
-        if (Input.GetKeyDown(KeyCode.Space) && isOnGround && !gameOver) 
+        // On spacebar, player will jump if on ground or on first jump assuming the game is not yet over
+        if (Input.GetKeyDown(KeyCode.Space) && (isOnGround || !isOnSecondJump) && !gameOver) 
         {
+
+            // If not on ground then it on second jump
+            if (!isOnGround)
+            {
+                isOnSecondJump = true;
+            }
+
             // Player jumps using force
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
-            // Play animation and sound effects, turn off dirt particle
-            playerAnim.SetTrigger("Jump_trig");
+            // Play jump sound
             playerAudio.PlayOneShot(jumpSound, 1.0f);
-            dirtParticle.Stop();
+
+
+            // Play animation and stop dirt particle if on first jump
+            if (!isOnSecondJump)
+            {
+                playerAnim.SetTrigger("Jump_trig");
+                dirtParticle.Stop();
+            }
 
             isOnGround = false;
         }
@@ -58,6 +73,7 @@ public class PlayerController : MonoBehaviour
             {
                 dirtParticle.Play();
                 isOnGround = true;
+                isOnSecondJump = false;
             }
 
         }
