@@ -45,6 +45,5 @@ public class SpawnManager : MonoBehaviour
             // Spawn the obstacle at a random delay
             Invoke("SpawnObstacle", randomDelay);
         }
-
     }
 }

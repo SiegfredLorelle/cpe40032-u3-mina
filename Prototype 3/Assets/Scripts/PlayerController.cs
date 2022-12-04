@@ -159,7 +159,7 @@ public class PlayerController : MonoBehaviour
                 playerAnim.SetBool("Death_b", true);
                 playerAnim.SetInteger("DeathType_int", 1);
 
-                // Play explosion and sound effects, turn off dirt particles
+                // Play explosion and sound effects
                 explosionParticle.Play();
                 playerAudio.PlayOneShot(crashSound, 0.5f);
 
